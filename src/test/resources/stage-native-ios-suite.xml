@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="UI Test" parallel="false">
+    <parameter name="platform" value="native-ios"></parameter>
+    <parameter name="DEVICE_NAME" value="iPhone-6"></parameter>
+    <parameter name="build" value="stage"></parameter>
+    <test name="Test">
+        <parameter name="APPIUM_VERSION" value="1.13.0"></parameter>
+        <parameter name="PLATFORM_VERSION" value="12.4"></parameter>
+        <parameter name="PLATFORM_NAME" value="iOS"></parameter>
+        <parameter name="AUTOMATION_NAME" value="XCUITest"></parameter>
+        <parameter name="DEVICE_NAME" value="iPhone-6"></parameter>
+        <parameter name="udid" value="03f042ed78b72dcd8cd370409625aeff4b82f54b"></parameter>
+        <parameter name="appActivity" value=""></parameter>
+        <parameter name="appPackage" value=""></parameter>
+        <parameter name="bundleId" value="com.vodafone.mva10.group.test"></parameter>
+        <parameter name="host" value="http://127.0.0.1:4723/wd/hub"></parameter>
+        <classes>
+            <class name="tests.FnLoginOverWiFi"></class>
+        </classes>
+    </test>
+</suite>

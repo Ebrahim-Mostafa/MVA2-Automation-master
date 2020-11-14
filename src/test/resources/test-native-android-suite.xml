@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Functional Test Suite" parallel="false">
+    <parameter name="platform" value="native-android"></parameter>
+    <parameter name="DEVICE_NAME" value="samsung-s8"></parameter>
+    <parameter name="build" value="test"></parameter>
+    <test name="Sample Test">
+      <!--Local execution-->
+        <parameter name="APPIUM_VERSION" value="1.13"></parameter>
+          <parameter name="PLATFORM_VERSION" value="8.1"></parameter>
+          <parameter name="PLATFORM_NAME" value="Android"></parameter>
+          <parameter name="AUTOMATION_NAME" value="UiAutomator2"></parameter>
+          <parameter name="DEVICE_NAME" value="R58M363BYQT"></parameter>
+          <parameter name="udid" value=""></parameter>
+          <parameter name="bundleId" value=""></parameter>
+          <parameter name="appActivity" value="com.vfg.mva10.framework.ui.StartActivity"></parameter>
+          <parameter name="appPackage" value="com.vodafone.mva10.test"></parameter>
+          <parameter name="host" value="http://127.0.0.1:4723/wd/hub"></parameter>
+        <classes>
+            <class name="tests.FnTestSample"></class>
+        </classes>
+    </test>
+</suite>

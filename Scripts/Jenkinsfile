@@ -1,0 +1,77 @@
+pipeline {
+    agent {
+        label 'android-slave'
+    }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '40'))
+    }
+    parameters {
+        string(name: 'upstreamJobName',
+                description: 'The branch name of the job triggering upstream build')
+        string(name: 'appArtifact',
+                description: 'Type of app artifact')
+        string(name: 'devicePoolName',
+                description: 'Name of AWS Device Farm device pool to use')
+        string(name: 'awsProjectName',
+                description: 'Name of AWS Device Farm project to use')
+        string(name: 'testSpecName',
+                description: 'Name of the YAML spec')
+    }
+    stages {
+      stage('Prepare') {
+            steps {
+                script {
+                   echo "Cleaning before checkout:"
+                   // Remove untracked directories and files
+                   sh "git clean -fdx"
+                }
+            }
+      }
+      stage('Copy Artifact') {
+            steps {
+                script {
+                    def projectName = "${params.upstreamJobName}"
+                    try {
+                        copyArtifacts fingerprintArtifacts: true,
+                            flatten: true,
+                            projectName: projectName,
+                            selector: upstream(fallbackToLastSuccessful: true),
+                            target: "${env.WORKSPACE}"
+                    } catch(Exception e) {
+                        echo "Pipeline aborted due to no artifact available to copy from " + projectName
+                        currentBuild.result = 'FAILURE'
+                        error "Copy Artifact failed"
+                    }
+                }
+            }
+      }
+      stage('Build') {
+            steps {
+                script {
+                  sh "mvn clean package -DskipTests=true"
+                }
+            }
+      }
+      stage('Testing') {
+            steps {
+              script {
+                 devicefarm appArtifact: "${params.appArtifact}",
+                      appiumJavaTestNGTest: '**/target/zip-with-dependencies.zip',
+                      appiumVersionTestng: '1.9.1',
+                      devicePoolName: "${params.devicePoolName}",
+                      environmentToRun: 'CustomEnvironment',
+                      ifVideoRecording: true,
+                      ifWebApp: false,
+                      ifWifi: true,
+                      jobTimeoutMinutes: 20,
+                      projectName: "${params.awsProjectName}",
+                      radioDetails: false,
+                      runName: '${BUILD_TAG}',
+                      storeResults: false,
+                      testSpecName: "${params.testSpecName}.yml",
+                      testToRun: 'APPIUM_JAVA_TESTNG'
+              }
+            }
+      }
+    }
+}
